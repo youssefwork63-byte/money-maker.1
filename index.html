@@ -1,0 +1,531 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title></title> money maker — نسخة أولية (MVP)</title>
+
+  <!-- Bootstrap CSS -->
+  <link
+    href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css"
+    rel="stylesheet"
+  />
+
+  <style>
+    h5,li{
+      color: white;
+    }
+    body {
+      background: #0f172a; /* slate-900 */
+      color: #e2e8f0;      /* slate-200 */
+      font-family: "Tajawal", system-ui, -apple-system, Segoe UI, Roboto, "Helvetica Neue", Arial;
+    }
+    .brand {
+      font-weight: 800;
+      letter-spacing: 0.5px;
+      color: #f59e0b; /* amber-500 */
+    }
+    .card {
+      background: #111827; /* gray-900 */
+      border: 1px solid #1f2937; /* gray-800 */
+    }
+    .badge-gold {
+      background: linear-gradient(90deg,#f59e0b,#fbbf24);
+      color: #111827;
+      font-weight: 700;
+    }
+    .btn-gold {
+      background: linear-gradient(90deg,#f59e0b,#fbbf24);
+      color: #111827;
+      font-weight: 700;
+      border: none;
+    }
+    .btn-gold:hover {
+      filter: brightness(1.05);
+    }
+    .muted {
+      color: #94a3b8;
+    }
+    .nav-pills .nav-link.active {
+      background-color: #1f2937;
+    }
+    .table-dark th, .table-dark td {
+      vertical-align: middle;
+    }
+    .form-check-input:checked {
+      background-color: #f59e0b;
+      border-color: #f59e0b;
+    }
+    .divider {
+      height: 1px;
+      background: #1f2937;
+      margin: 1rem 0;
+    }
+    .footer-note {
+      font-size: 0.85rem;
+      color: #94a3b8;
+    }
+  </style>
+</head>
+<body>
+  <!-- Header -->
+  <nav class="navbar navbar-dark" style="background:#0b1020; border-bottom:1px solid #1f2937;">
+    <div class="container">
+      <span class="navbar-brand mb-0 h1 brand"> Money maker  تجريبي 1</span>
+      <span class="badge badge-gold rounded-pill">نسخة أولية   </span>
+    </div>
+  </nav>
+
+  <div class="container my-4">
+    <!-- Tabs -->
+    <ul class="nav nav-pills mb-3" id="appTabs" role="tablist">
+      <li class="nav-item" role="presentation">
+        <button class="nav-link active" id="user-tab" data-bs-toggle="pill" data-bs-target="#user" type="button" role="tab">
+          المستخدم
+        </button>
+      </li>
+      <li class="nav-item" role="presentation">
+        <button class="nav-link" id="admin-tab" data-bs-toggle="pill" data-bs-target="#admin" type="button" role="tab">
+          لوحة التحكم (الأدمن)
+        </button>
+      </li>
+      <li class="nav-item" role="presentation">
+        <button class="nav-link" id="about-tab" data-bs-toggle="pill" data-bs-target="#about" type="button" role="tab">
+          ملاحظات النسخة
+        </button>
+      </li>
+    </ul>
+
+    <div class="tab-content" id="appTabsContent">
+      <!-- User App -->
+      <div class="tab-pane fade show active" id="user" role="tabpanel" aria-labelledby="user-tab">
+        <div class="row g-3">
+          <div class="col-lg-8">
+            <div class="card p-3">
+              <div class="d-flex justify-content-between align-items-center">
+                <h5 class="mb-0">الأسئلة</h5>
+                <span class="badge bg-secondary" id="questionCountBadge">0/0</span>
+              </div>
+              <div class="divider"></div>
+
+              <div id="questionArea">
+                <!-- Question renders here -->
+              </div>
+
+              <div class="d-flex gap-2 mt-3">
+                <button class="btn btn-outline-light" id="prevBtn">السابق</button>
+                <button class="btn btn-outline-light" id="nextBtn">التالي</button>
+                <button class="btn btn-gold ms-auto" id="submitAnswerBtn">تأكيد الإجابة</button>
+              </div>
+            </div>
+          </div>
+
+          <div class="col-lg-4">
+            <div class="card p-3">
+              <h5 class="mb-2">بيانات المستخدم</h5>
+              <div class="divider"></div>
+
+              <div class="mb-3">
+                <label class="form-label">الاسم</label>
+                <input type="text" class="form-control" id="userNameInput" placeholder="أدخل اسمك" />
+              </div>
+
+              <div class="mb-2">
+                <div class="d-flex align-items-center justify-content-between">
+                  <span class="muted">الرصيد الحالي</span>
+                  <span class="badge badge-gold rounded-pill" id="userPoints">0</span>
+                </div>
+              </div>
+
+              <div class="d-flex gap-2">
+                <button class="btn btn-outline-light" id="saveUserBtn">حفظ البيانات</button>
+                <button class="btn btn-outline-warning" id="resetUserBtn">تصفير الرصيد</button>
+              </div>
+            </div>
+
+            <div class="card p-3 mt-3">
+              <h5 class="mb-2">طلب استبدال النقاط</h5>
+              <div class="divider"></div>
+              <p class="muted mb-2">
+                طلب يدوي للاستبدال. عند الموافقة من الأدمن يتم تسجيل العملية. (نسخة أولية بدون دفع إلكتروني)
+              </p>
+              <div class="mb-3">
+                <label class="form-label">كم نقطة تريد استبدالها؟</label>
+                <input type="number" class="form-control" id="redeemAmount" placeholder="مثلاً: 100" min="0" />
+              </div>
+              <button class="btn btn-gold" id="redeemRequestBtn">إرسال الطلب</button>
+              <div class="mt-2">
+                <small class="footer-note" id="redeemStatus"></small>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Admin Dashboard -->
+      <div class="tab-pane fade" id="admin" role="tabpanel" aria-labelledby="admin-tab">
+        <div class="row g-3">
+          <div class="col-lg-7">
+            <div class="card p-3">
+              <h5 class="mb-2">إدارة الأسئلة</h5>
+              <div class="divider"></div>
+
+              <form id="questionForm" class="row g-3">
+                <div class="col-12">
+                  <label class="form-label">نص السؤال</label>
+                  <input type="text" class="form-control" id="qText" placeholder="اكتب السؤال" required />
+                </div>
+
+                <div class="col-12">
+                  <label class="form-label">الخيارات (اختيار واحد صحيح)</label>
+                  <div class="row g-2">
+                    <div class="col-6"><input type="text" class="form-control" id="optA" placeholder="الخيار أ" required /></div>
+                    <div class="col-6"><input type="text" class="form-control" id="optB" placeholder="الخيار ب" required /></div>
+                    <div class="col-6"><input type="text" class="form-control" id="optC" placeholder="الخيار ج" required /></div>
+                    <div class="col-6"><input type="text" class="form-control" id="optD" placeholder="الخيار د" required /></div>
+                  </div>
+                </div>
+
+                <div class="col-12">
+                  <label class="form-label">الخيار الصحيح</label>
+                  <select class="form-select" id="correctIndex" required>
+                    <option value="0">أ</option>
+                    <option value="1">ب</option>
+                    <option value="2">ج</option>
+                    <option value="3">د</option>
+                  </select>
+                </div>
+
+                <div class="col-12">
+                  <label class="form-label">عدد النقاط عند الإجابة الصحيحة</label>
+                  <input type="number" class="form-control" id="pointsValue" value="10" min="1" required />
+                </div>
+
+                <div class="col-12 d-flex gap-2">
+                  <button class="btn btn-gold" type="submit">إضافة سؤال</button>
+                  <button class="btn btn-outline-light" type="button" id="seedQuestionsBtn">إضافة أسئلة تجريبية</button>
+                  <button class="btn btn-outline-danger ms-auto" type="button" id="clearQuestionsBtn">حذف كل الأسئلة</button>
+                </div>
+              </form>
+            </div>
+
+            <div class="card p-3 mt-3">
+              <h5 class="mb-2">قائمة الأسئلة</h5>
+              <div class="divider"></div>
+              <div class="table-responsive">
+                <table class="table table-dark table-striped align-middle">
+                  <thead>
+                    <tr>
+                      <th>#</th>
+                      <th>السؤال</th>
+                      <th>النقاط</th>
+                      <th>الصحيح</th>
+                      <th>إجراءات</th>
+                    </tr>
+                  </thead>
+                  <tbody id="questionsTableBody"></tbody>
+                </table>
+              </div>
+            </div>
+          </div>
+
+          <div class="col-lg-5">
+            <div class="card p-3">
+              <h5 class="mb-2">المستخدمون</h5>
+              <div class="divider"></div>
+              <div class="table-responsive">
+                <table class="table table-dark table-striped align-middle">
+                  <thead>
+                    <tr>
+                      <th>#</th>
+                      <th>الاسم</th>
+                      <th>النقاط</th>
+                      <th>آخر تحديث</th>
+                    </tr>
+                  </thead>
+                  <tbody id="usersTableBody"></tbody>
+                </table>
+              </div>
+            </div>
+
+            <div class="card p-3 mt-3">
+              <h5 class="mb-2">طلبات الاستبدال</h5>
+              <div class="divider"></div>
+              <div class="table-responsive">
+                <table class="table table-dark table-striped align-middle">
+                  <thead>
+                    <tr>
+                      <th>#</th>
+                      <th>الاسم</th>
+                      <th>النقاط المطلوبة</th>
+                      <th>الحالة</th>
+                      <th>إجراءات</th>
+                    </tr>
+                  </thead>
+                  <tbody id="redeemTableBody"></tbody>
+                </table>
+              </div>
+            </div>
+
+            <div class="card p-3 mt-3">
+              <h5 class="mb-2">توليد أسئلة بالذكاء الصناعي (نموذج تجريبي)</h5>
+              <div class="divider"></div>
+              <p class="muted mb-2">
+                نموذج عرض فقط: يولّد سؤالًا بسيطًا من موضوع عام. في النسخة النهائية سيتم الربط مع API خارجي.
+              </p>
+              <div class="input-group mb-2">
+                <input type="text" id="aiTopicInput" class="form-control" placeholder="اكتب موضوعًا: رياضيات، تاريخ، برمجة..." />
+                <button class="btn btn-outline-light" id="generateAiQuestionBtn">توليد سؤال</button>
+              </div>
+              <small class="footer-note" id="aiGenStatus"></small>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Notes -->
+      <div class="tab-pane fade" id="about" role="tabpanel" aria-labelledby="about-tab">
+        <div class="card p-3">
+          <h5 class="mb-2">ملاحظات النسخة الأولية</h5>
+          <div class="divider"></div>
+          <ul class="mb-0">
+            <li>تخزين البيانات محليًا عبر LocalStorage — لأغراض العرض فقط.</li>
+            <li>يمكن إضافة/تعديل/حذف الأسئلة من لوحة التحكم، وتنعكس مباشرة في واجهة المستخدم.</li>
+            <li>طلب الاستبدال يتم حفظه ويظهر للأدمن للموافقة أو الرفض — بدون دفع إلكتروني.</li>
+            <li>نموذج توليد الأسئلة بالذكاء الصناعي هنا تجريبي للتوضيح، النسخة النهائية تربط API.</li>
+            <li>صمم بواسطة C-Blaze</li>
+            <li>نموذج مبسط حيث تم دمج لوحة dashboard ضمن الموقع</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Bootstrap JS -->
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+
+  <!-- App Script -->
+  <script>
+  
+// ================= Helpers =================
+var LS_KEYS = {
+  USERS: 'mab_users',
+  QUESTIONS: 'mab_questions',
+  ACTIVE_USER: 'mab_active_user'
+};
+
+function getLS(key, def) {
+  try {
+    var raw = localStorage.getItem(key);
+    return raw ? JSON.parse(raw) : def;
+  } catch (e) {
+    return def;
+  }
+}
+function setLS(key, val) {
+  localStorage.setItem(key, JSON.stringify(val));
+}
+
+function uuid() {
+  return Date.now().toString(36) + Math.random().toString(36).substr(2, 5);
+}
+
+// ================= State =================
+var questions = getLS(LS_KEYS.QUESTIONS, []);
+var users = getLS(LS_KEYS.USERS, []);
+var activeUser = getLS(LS_KEYS.ACTIVE_USER, { name: '', points: 0 });
+
+// ================= User Logic =================
+function saveActiveUser(nameInputEl, pointsBadgeEl) {
+  var name = nameInputEl.value.trim();
+  if (!name) return;
+  activeUser.name = name;
+  setLS(LS_KEYS.ACTIVE_USER, activeUser);
+
+  var idx = users.findIndex(u => u.name === name);
+  if (idx >= 0) {
+    users[idx].points = activeUser.points;
+  } else {
+    users.push({ name: name, points: activeUser.points });
+  }
+  setLS(LS_KEYS.USERS, users);
+  pointsBadgeEl.textContent = activeUser.points || 0;
+  renderUsersTable();
+}
+
+function addPointsToActiveUser(points, pointsBadgeEl) {
+  activeUser.points = (activeUser.points || 0) + points;
+  setLS(LS_KEYS.ACTIVE_USER, activeUser);
+
+  var idx = users.findIndex(u => u.name === activeUser.name);
+  if (idx >= 0) {
+    users[idx].points = activeUser.points;
+    setLS(LS_KEYS.USERS, users);
+  }
+  pointsBadgeEl.textContent = activeUser.points || 0;
+  renderUsersTable();
+}
+
+// ================= Questions =================
+var currentQuestionIndex = 0;
+var selectedOptionIndex = null;
+
+function addQuestion(q) {
+  questions.push(q);
+  setLS(LS_KEYS.QUESTIONS, questions);
+  renderQuestionsTable();
+  renderQuestion();
+  updateQuestionBadge();
+}
+
+function deleteQuestion(id) {
+  questions = questions.filter(q => q.id !== id);
+  setLS(LS_KEYS.QUESTIONS, questions);
+  renderQuestionsTable();
+  renderQuestion();
+  updateQuestionBadge();
+}
+
+function updateQuestionBadge() {
+  var badge = document.getElementById('questionCountBadge');
+  if (!badge) return;
+  if (questions.length === 0) badge.textContent = '0/0';
+  else badge.textContent = (currentQuestionIndex + 1) + '/' + questions.length;
+}
+
+function renderQuestion() {
+  var area = document.getElementById('questionArea');
+  if (!area) return;
+  area.innerHTML = '';
+
+  if (questions.length === 0) {
+    area.innerHTML = '<div class="alert alert-warning">لا توجد أسئلة. أضِف أسئلة من لوحة التحكم.</div>';
+    updateQuestionBadge();
+    return;
+  }
+
+  var q = questions[currentQuestionIndex];
+  selectedOptionIndex = null;
+
+  var header = document.createElement('div');
+  header.className = 'mb-2 d-flex justify-content-between align-items-center';
+  header.innerHTML = '<h6 class="mb-0">' + q.text + '</h6><span class="badge bg-info">+' + q.points + ' نقطة</span>';
+
+  var list = document.createElement('div');
+  list.className = 'list-group';
+  q.options.forEach(function(opt, idx) {
+    var btn = document.createElement('button');
+    btn.className = 'list-group-item list-group-item-action';
+    btn.textContent = ['أ','ب','ج','د'][idx] + ' — ' + opt;
+    btn.addEventListener('click', function() {
+      selectedOptionIndex = idx;
+      list.querySelectorAll('button').forEach(b => b.classList.remove('active'));
+      btn.classList.add('active');
+    });
+    list.appendChild(btn);
+  });
+
+  area.appendChild(header);
+  area.appendChild(list);
+  updateQuestionBadge();
+}
+function submitAnswer(pointsBadgeEl) {
+  if (questions.length === 0) return;
+  var q = questions[currentQuestionIndex];
+  if (selectedOptionIndex === null) {
+    alert('يرجى اختيار إجابة أولًا.');
+    return;
+  }
+  if (selectedOptionIndex === q.correctIndex) {
+    addPointsToActiveUser(q.points, pointsBadgeEl);
+    alert('إجابة صحيحة! تم إضافة النقاط.');
+  } else {
+    alert('إجابة خاطئة. لا نقاط.');
+  }
+}
+
+// ================= Admin Rendering =================
+function renderUsersTable() {
+  var tbody = document.getElementById('usersTableBody');
+  if (!tbody) return;
+  tbody.innerHTML = '';
+  users.forEach(function(u, i) {
+    var tr = document.createElement('tr');
+    tr.innerHTML = '<td>'+(i+1)+'</td><td>'+u.name+'</td><td>'+u.points+'</td>';
+    tbody.appendChild(tr);
+  });
+}
+
+function renderQuestionsTable() {
+  var tbody = document.getElementById('questionsTableBody');
+  if (!tbody) return;
+  tbody.innerHTML = '';
+  questions.forEach(function(q, i) {
+    var tr = document.createElement('tr');
+    tr.innerHTML = '<td>'+(i+1)+'</td><td>'+q.text+'</td><td>'+q.points+'</td><td>'+['أ','ب','ج','د'][q.correctIndex]+'</td>';
+    var delBtn = document.createElement('button');
+    delBtn.className = 'btn btn-sm btn-outline-danger';
+    delBtn.textContent = 'حذف';
+    delBtn.addEventListener('click', function(){ deleteQuestion(q.id); });
+    var td = document.createElement('td');
+    td.appendChild(delBtn);
+    tr.appendChild(td);
+    tbody.appendChild(tr);
+  });
+}
+
+// ================= Init =================
+function initUI() {
+  renderQuestionsTable();
+  renderQuestion();
+  updateQuestionBadge();
+  renderUsersTable();
+
+  var nameInput = document.getElementById('userNameInput');
+  var pointsBadge = document.getElementById('userPoints');
+  var saveBtn = document.getElementById('saveUserBtn');
+  var submitBtn = document.getElementById('submitAnswerBtn');
+
+  if (nameInput && pointsBadge && saveBtn) {
+    saveBtn.addEventListener('click', function(){ saveActiveUser(nameInput, pointsBadge); });
+  }
+  if (submitBtn && pointsBadge) {
+    submitBtn.addEventListener('click', function(){ submitAnswer(pointsBadge); });
+  }
+
+  // Form إضافة سؤال
+  var form = document.getElementById('questionForm');
+  if (form) {
+    form.addEventListener('submit', function(e){
+      e.preventDefault();
+      var qText = document.getElementById('qText').value.trim();
+      var optA = document.getElementById('optA').value.trim();
+      var optB = document.getElementById('optB').value.trim();
+      var optC = document.getElementById('optC').value.trim();
+      var optD = document.getElementById('optD').value.trim();
+      var correctIndex = parseInt(document.getElementById('correctIndex').value, 10);
+      var pointsValue = parseInt(document.getElementById('pointsValue').value, 10);
+
+      if (!qText || !optA || !optB || !optC || !optD) {
+        alert("يرجى إدخال جميع الحقول");
+        return;
+      }
+
+      var newQuestion = {
+        id: uuid(),
+        text: qText,
+        options: [optA, optB, optC, optD],
+        correctIndex: correctIndex,
+        points: pointsValue
+      };
+      addQuestion(newQuestion);
+      form.reset();
+    });
+  }
+}
+
+if (document.readyState === 'loading') {
+  document.addEventListener('DOMContentLoaded', initUI);
+} else {
+  initUI();
+}
